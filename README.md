@@ -1,15 +1,15 @@
-# Payment Operations Agent - Multi-Agent System
+# Payment Operations Agent - Learning Project
 
-A production-ready multi-agent CLI application for automated payment operations using OpenAI's Agent SDK and Model Context Protocol (MCP). Built for developers who need to understand both AI agent patterns and real-world payment processing workflows.
+A learning project for mastering OpenAI's Agent SDK through realistic payment processing workflows. Features multi-agent coordination with specialist agents for compliance and customer service.
 
 ## Overview
 
-This project demonstrates modern multi-agent AI architecture through a practical payment operations use case. The system coordinates between specialized agents (Payment Operations, Customer Service, and Compliance) to handle failed payments with comprehensive workflow automation.
+This project demonstrates modern multi-agent AI architecture through a practical payment operations use case. The system coordinates between a primary orchestrator and specialized agents (Customer Service and Compliance) to handle failed payments with comprehensive workflow automation.
 
 **Key Features:**
 - **Multi-Agent Architecture**: Coordinated specialist agents with handoff patterns
-- **MCP Protocol**: Standards-compliant tool integration across all agents
-- **Production CLI**: Clean, professional terminal interface with multi-agent commands
+- **MCP Protocol**: Unified tool integration across all agents
+- **Learning-Focused CLI**: Clean terminal interface for educational exploration
 - **Cost Optimized**: Uses GPT-4o-mini for ~85% cost savings
 - **Business Logic**: Real payment operations, compliance, and customer service workflows
 - **Full Traceability**: Complete audit trail of all actions and agent handoffs
@@ -18,31 +18,32 @@ This project demonstrates modern multi-agent AI architecture through a practical
 
 ```
 ┌─────────────────┐                    ┌─────────────────────────┐
-│   CLI Interface │ ──────────────────►│  Multi-Agent Coordinator│
-│ (Enhanced CLI)  │                    │  (Workflow Orchestrator)│
+│   CLI Interface │ ──────────────────►│ Payment Ops Orchestrator│
+│   (Simple CLI)  │                    │   (Primary Agent)       │
 └─────────────────┘                    └─────────┬───────────────┘
                                                  │
                           ┌──────────────────────┼──────────────────────┐
                           ▼                      ▼                      ▼
                ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
                │ Payment Ops     │    │ Customer Service│    │ Compliance      │
-               │ Agent           │    │ Agent           │    │ Agent           │
+               │ Orchestrator    │    │ Specialist      │    │ Specialist      │
                └─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘
-                         │ MCP                  │ MCP                  │ MCP
-                         ▼                      ▼                      ▼
-               ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-               │ Payment MCP     │    │ Customer MCP    │    │ Compliance MCP  │
-               │ Server          │    │ Server          │    │ Server          │
-               └─────────────────┘    └─────────────────┘    └─────────────────┘
+                         │                      │                      │
+                         └──────────────────────┼──────────────────────┘
+                                                ▼
+                                    ┌─────────────────────────┐
+                                    │   Unified MCP Server    │
+                                    │  (7 Payment Tools)      │
+                                    └─────────────────────────┘
 ```
 
 **Technology Stack:**
 - **Agent Framework**: OpenAI Agents SDK with multi-agent coordination
-- **Tool Protocol**: Model Context Protocol (MCP) with multiple servers
-- **CLI Framework**: Pure Python with multi-agent command support
+- **Tool Protocol**: Model Context Protocol (MCP) with unified server
+- **CLI Framework**: Pure Python with educational focus
 - **Package Manager**: UV for fast, reliable dependency management
 - **Model**: GPT-4o-mini for cost-effective operations
-- **Architecture**: Coordinated specialist agents with handoff patterns
+- **Architecture**: Specialist agents with handoff patterns
 
 ## Quick Start
 
@@ -56,7 +57,7 @@ This project demonstrates modern multi-agent AI architecture through a practical
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/smeierjr/payment-ops-agent.git
 cd payment-ops-agent
 
 # Install dependencies
@@ -75,8 +76,8 @@ cp .env.example .env
 # Recommended methods (from project root):
 
 # 1. Using UV entry point (recommended)
-uv run payment-ops -q "analyze pending payments"  # Single agent
-uv run payment-ops  # Interactive mode with multi-agent commands
+uv run payment-ops -q "analyze pending payments"  # Single query
+uv run payment-ops  # Interactive mode
 
 # 2. Using development scripts
 ./scripts/dev run -q "analyze pending payments"
@@ -91,69 +92,36 @@ uv run payment-ops --help
 
 ## CLI Interface
 
-The CLI provides both single-shot and interactive modes designed for daily operations.
+The CLI provides both single-shot and interactive modes designed for learning and experimentation.
 
 ### Interactive Mode
 
 ```bash
 $ uv run payment-ops
 ================================================================================
-🤖 Payment Operations CLI - Multi-Agent System
+🤖 Payment Operations CLI - Learning Project
 ================================================================================
-Commands: analyze, multi-agent, compliance, customer-service, help, history, exit
+Commands: help, history, exit, or enter any payment analysis query
 
-payment-ops> multi-agent
-🚀 Starting Multi-Agent Workflow...
-   📊 Phase 1: Payment Operations Analysis
-   🔍 Phase 2: Compliance Assessment
-   📞 Phase 3: Customer Service Communications
+payment-ops> analyze pending payments
+🚀 Payment Operations Analysis
+Processing 5 payments through multi-agent coordination...
 
-🚀 Multi-Agent Payment Operations Summary
+📊 Payment Processing Results
+==========================================================================================
+1. PAY-12345 ($1,500.00): INSUFFICIENT_FUNDS → Escalate + notify customer
+2. PAY-12346 ($2,500.00): TECHNICAL_FAILURE → Retry (< 24hrs old)
+3. PAY-12347 ($7,500.00): COMPLIANCE_HOLD → Escalate to compliance
+4. PAY-12348 ($800.00): CARD_DECLINED → Customer action required
+5. PAY-12349 ($1,200.00): UNKNOWN_ERROR → Escalate with context
+
+📈 Summary: 1 retry, 3 escalations, 1 customer action
 ==========================================================================================
 
-📊 Payment Operations (5 payments processed)
---------------------------------------------------
-1. PAY-12345: Insufficient funds → escalate
-2. PAY-12346: Technical failure → retry
-3. PAY-12347: Compliance hold → escalate
-4. PAY-12348: Card declined → no action
-5. PAY-12349: Technical failure → no action
-
-🔍 Compliance Assessment (2 reviews)
---------------------------------------------------
-• PAY-12345: Risk Level MEDIUM
-• PAY-12347: Risk Level HIGH
-
-📞 Customer Service (3 communications)
---------------------------------------------------
-• PAY-12345: Customer notified about insufficient_funds
-• PAY-12346: Customer notified about technical_failure
-• PAY-12347: Customer notified about compliance_hold
-
-📈 Workflow Summary
---------------------------------------------------
-Total Payments: 5
-Handoffs Completed: 5
-Agents Involved: payment_ops, compliance, customer_service
-==========================================================================================
-
-payment-ops> compliance PAY-12345
-🔍 Running Compliance Assessment...
-🔍 Compliance Assessment Results
-============================================================
-Payment: PAY-12345
-Risk Level: MEDIUM
-Recommendations: Enhanced monitoring recommended, Manual review required for high-value transactions
-============================================================
-
-payment-ops> customer-service notify PAY-12345
-📞 Running Customer Service Actions...
-📞 Customer Service Results
-============================================================
-Payment: PAY-12345
-Customer: CUST-789
-Action: Customer service agent completed communication tasks
-============================================================
+payment-ops> history
+📋 Previous Analysis Results
+1. [2025-01-15 10:30:00] analyze pending payments (trace: pay-ops-20250115-103000)
+2. [2025-01-15 10:25:00] what payments need attention (trace: pay-ops-20250115-102500)
 
 payment-ops> exit
 👋 Goodbye!
@@ -161,18 +129,9 @@ payment-ops> exit
 
 ### Available Commands
 
-**Single Agent Commands:**
-- **`analyze`** - Analyze pending payments (single agent mode)
-
-**Multi-Agent Commands:**
-- **`multi-agent`** - Run comprehensive 3-phase workflow (Payment Ops → Compliance → Customer Service)
-- **`compliance [payment_id]`** - Run compliance-only assessment
-- **`customer-service [action] [payment_id]`** - Run customer service actions
-
-**Utility Commands:**
-- **`help`** - Show command help and examples  
-- **`history`** - View previous analysis results with timestamps
-- **`clear`** - Clear terminal screen
+- **Any text query** - Sent to Payment Operations Orchestrator
+- **`help`** - Show available commands
+- **`history`** - View previous analysis results with trace IDs
 - **`exit`** - Exit the CLI
 
 ### Single Query Mode
@@ -180,11 +139,8 @@ payment-ops> exit
 For automation and scripting:
 
 ```bash
-# Single agent analysis
+# Single query analysis
 uv run payment-ops -q "analyze pending payments"
-
-# Multi-agent workflows (interactive mode recommended)
-uv run payment-ops  # Then use: multi-agent, compliance, customer-service
 
 # Custom analysis queries
 uv run payment-ops -q "what payments need attention?"
@@ -195,31 +151,29 @@ uv run payment-ops -q "retry failed technical payments"
 
 The multi-agent system implements realistic payment operations workflows:
 
-### Payment Operations Agent
+### Payment Operations Orchestrator
 - **Insufficient Funds** → Escalate with customer notification
 - **Technical Failure** → Retry once if < 24 hours old, else escalate
 - **Compliance Hold** → Escalate to compliance team
-- **Card Declined** → Escalate after retry limit exceeded
+- **Card Declined** → Customer action required
 - **Unknown Errors** → Escalate with full context
 
-### Compliance Agent
+### Compliance Specialist
 - **AML Compliance Checks** → Risk scoring and assessment
-- **Sanctions Screening** → Customer watchlist verification
 - **Risk Assessment** → LOW/MEDIUM/HIGH risk classification
-- **Case Creation** → Manual review for high-risk transactions
-- **Regulatory Reporting** → Comprehensive compliance documentation
+- **Regulatory Review** → Manual review for high-risk transactions
+- **International Transactions** → Enhanced due diligence
 
-### Customer Service Agent
+### Customer Service Specialist
 - **Customer Notifications** → Automated communication about payment issues
-- **Contact Preferences** → Email/phone preference management
+- **Service Tiers** → VIP/Business/Standard customer handling
+- **Communication Preferences** → Email/phone preference management
 - **Follow-up Scheduling** → Automated customer outreach planning
-- **Communication History** → Complete interaction tracking
 
-### Multi-Agent Coordination
-- **Phase 1**: Payment Operations analysis and initial actions
-- **Phase 2**: Compliance assessment for escalated payments
-- **Phase 3**: Customer Service notifications for all failed payments
-- **Handoff Tracking**: Complete audit trail of agent interactions
+### Agent Coordination
+- **Individual Payment Processing** → Each payment analyzed separately for educational clarity
+- **Handoff Logic** → Business rules determine when to involve specialists
+- **Trace Tracking** → Each payment gets unique workflow trace for observability
 
 ### Mock Data
 
@@ -244,71 +198,59 @@ The system includes realistic test data with 5 failed payments covering differen
 ```
 payment-ops-agent/
 ├── src/
-│   └── payment_ops/                # Main package
-│       ├── __init__.py             # Package initialization
-│       ├── cli.py                  # Enhanced CLI with multi-agent support
+│   └── payment_ops/                    # Main package
+│       ├── __init__.py
+│       ├── cli.py                      # Simple CLI interface
 │       ├── agent/
 │       │   ├── __init__.py
-│       │   ├── payment_ops.py      # Payment Operations Agent
-│       │   ├── customer_service.py # Customer Service Agent
-│       │   ├── compliance.py       # Compliance Agent
-│       │   └── multi_agent_coordinator.py # Multi-Agent Coordinator
-│       ├── payment_mcp/
+│       │   ├── payment_ops_orchestrator.py  # Main orchestrator
+│       │   ├── customer_service_specialist.py # Customer service agent
+│       │   └── compliance_specialist.py      # Compliance agent
+│       ├── unified_mcp/                # Single MCP server
 │       │   ├── __init__.py
-│       │   └── server.py           # Payment operations MCP tools
-│       ├── customer_mcp/
-│       │   ├── __init__.py
-│       │   └── server.py           # Customer service MCP tools
-│       ├── compliance_mcp/
-│       │   ├── __init__.py
-│       │   └── server.py           # Compliance MCP tools
+│       │   └── server.py               # 7 payment tools
 │       ├── data/
 │       │   ├── __init__.py
-│       │   └── mock_payments.py    # Test payment data
-│       └── errors.py               # Error handling
-├── tests/                          # Test suite
+│       │   └── mock_payments.py        # Test payment data
+│       └── errors.py                   # Error handling
+├── tests/                              # Test suite
 │   ├── test_mock_data.py
 │   ├── test_cli.py
-│   └── test_multi_agent.py         # Multi-agent system tests
-├── scripts/                        # Development scripts
-│   ├── dev                         # Development helper
-│   └── test                        # Test runner
-└── pyproject.toml                  # Project configuration
+│   ├── test_multi_agent.py
+│   └── test_agent_validation.py
+├── scripts/                            # Development scripts
+│   ├── dev                             # Development helper
+│   └── test                            # Test runner
+└── pyproject.toml                      # Project configuration
 ```
 
 ### Key Components
 
-**Multi-Agent Coordinator** (`src/payment_ops/agent/multi_agent_coordinator.py`):
-- Orchestrates workflows between all agents
-- Manages agent handoffs and communication
-- Tracks inter-agent coordination and audit trails
-- Provides comprehensive workflow summaries
+**Payment Operations Orchestrator** (`src/payment_ops/agent/payment_ops_orchestrator.py`):
+- Main agent coordinating payment processing workflows
+- Implements handoff logic to specialist agents
+- Uses OpenAI Agent SDK patterns for proper agent coordination
+- Processes individual payments with clear business logic
 
-**Payment Operations Agent** (`src/payment_ops/agent/payment_ops.py`):
-- Core payment analysis and decision logic
-- Implements payment business rules
-- Manages payment operations MCP tools
+**Customer Service Specialist** (`src/payment_ops/agent/customer_service_specialist.py`):
+- Handles customer communications and notifications
+- Manages VIP/Business/Standard customer tiers
+- Implements service level agreements per customer type
 
-**Customer Service Agent** (`src/payment_ops/agent/customer_service.py`):
-- Handles customer communication and notifications
-- Manages contact preferences and history
-- Schedules follow-ups and tracks interactions
+**Compliance Specialist** (`src/payment_ops/agent/compliance_specialist.py`):
+- Conducts risk assessment and compliance checks
+- Handles AML compliance and regulatory requirements
+- Manages HIGH/MEDIUM/LOW risk classifications
 
-**Compliance Agent** (`src/payment_ops/agent/compliance.py`):
-- Conducts AML compliance checks and risk assessment
-- Performs sanctions screening and regulatory compliance
-- Creates compliance cases and generates reports
+**Unified MCP Server** (`src/payment_ops/unified_mcp/server.py`):
+- Single MCP server providing 7 payment tools
+- Tools: get_pending_payments, get_payment_details, retry_payment, escalate_payment, assess_payment_risk, notify_customer, get_action_log
+- Shared across all agents for consistent tool access
 
-**MCP Servers**:
-- **Payment MCP** (`src/payment_ops/payment_mcp/server.py`): Payment operations tools
-- **Customer MCP** (`src/payment_ops/customer_mcp/server.py`): Customer service tools
-- **Compliance MCP** (`src/payment_ops/compliance_mcp/server.py`): Compliance and risk tools
-
-**Enhanced CLI Interface** (`src/payment_ops/cli.py`):
-- Multi-agent workflow commands
-- Individual agent access (compliance, customer-service)
-- Session history with multi-agent result storage
-- Professional terminal interface with no complex dependencies
+**Simple CLI Interface** (`src/payment_ops/cli.py`):
+- Interactive and single-query modes
+- History tracking with trace IDs
+- Clean terminal interface with no complex dependencies
 
 ### Development Scripts
 
@@ -322,7 +264,7 @@ The project provides two optimized scripts for different development workflows:
 ./scripts/test
 
 # Includes:
-# ✅ All 26 pytest tests 
+# ✅ All pytest tests 
 # ✅ Flake8 linting (code style, line length, unused imports)
 # ✅ Python syntax check (optimized for speed)
 # ✅ Dependency verification
@@ -342,15 +284,10 @@ The project provides two optimized scripts for different development workflows:
 ./scripts/dev run                                   # Interactive mode
 
 # Individual development tasks
-./scripts/dev lint                                  # Just linting (subset of ./scripts/test)
+./scripts/dev lint                                  # Just linting
 ./scripts/dev format                                # Auto-format code with black
 ./scripts/dev server                                # Start MCP server directly
 ./scripts/dev setup                                 # Environment setup
-
-# Examples:
-./scripts/dev lint      # Quick style check during development
-./scripts/dev format    # Format before committing
-./scripts/dev run       # Test CLI changes quickly
 ```
 
 #### When to Use Which Script
@@ -380,41 +317,32 @@ uv run python -m flake8 src/ tests/ --max-line-length=100  # Just linting
 uv run python -m pytest tests/test_mock_data.py -v          # Core data tests
 uv run python -m pytest tests/test_cli.py -v               # CLI tests
 uv run python -m pytest tests/test_multi_agent.py -v       # Multi-agent tests
-
-# Test with coverage
-uv run python -m pytest tests/ --cov=src/payment_ops --cov-report=html
+uv run python -m pytest tests/test_agent_validation.py -v  # Agent validation tests
 
 # Direct CLI testing
 uv run payment-ops --help
-uv run payment-ops -q "analyze"                    # Single agent
+uv run payment-ops -q "analyze"                    # Single query
 uv run payment-ops                                 # Interactive mode
 ```
 
 #### Test Coverage
 
-The test suite includes:
-- **Data Layer Tests**: Mock database operations, payment retrieval, retry logic, escalation
-- **CLI Tests**: Project structure validation, import verification
-- **Multi-Agent Tests**: Agent class instantiation, MCP server verification, coordinator structure
-- **Integration Tests**: End-to-end payment processing workflows and agent handoffs
-- **Edge Cases**: Invalid payment IDs, error conditions, retry limits
+Current test suite covers:
+- **Data Layer**: Mock database operations, payment processing logic
+- **CLI Structure**: Import validation and basic CLI functionality  
+- **Agent System**: Agent instantiation and coordination
+- **Multi-Agent Workflows**: Individual payment processing patterns
 
 **Test Files:**
-- `test_mock_data.py`: Core payment database functionality (8 tests)
-- `test_cli.py`: CLI structure and imports (2 tests)
-- `test_multi_agent.py`: Multi-agent system components (9 tests)
+- `test_mock_data.py`: Core payment database functionality
+- `test_cli.py`: CLI structure and imports validation
+- `test_multi_agent.py`: Agent system components
+- `test_agent_validation.py`: Agent validation and coordination
 
-**Total Test Coverage**: 19 tests covering single-agent, multi-agent, and integration scenarios
-
+**Run Tests:**
 ```bash
-# View test results in detail
-uv run python -m pytest tests/ -v --tb=short
-
-# Run tests in parallel (faster)
-uv run python -m pytest tests/ -n auto
-
-# Run tests with output (for debugging)
-uv run python -m pytest tests/ -v -s
+./scripts/test                          # Complete validation suite
+uv run python -m pytest tests/ -v      # Individual test execution
 ```
 
 ### Troubleshooting
@@ -448,18 +376,17 @@ cat .env | grep OPENAI_API_KEY
 python -c "import openai; print('API key configured')"
 ```
 
-**Issue**: Import or path errors
-```bash
-# Run tests to verify structure
-./scripts/test
+## Learning Project Goals
 
-# Check project structure
-./scripts/dev help
+This codebase serves as a hands-on learning project for:
+- **OpenAI Agent SDK**: Modern multi-agent development patterns
+- **Agent Handoffs**: Proper coordination between specialist agents
+- **MCP Integration**: Tool sharing across multiple agents
+- **Payment Processing**: Realistic business logic implementation
+- **CLI Design**: Professional terminal application development
 
-# Reinstall package in development mode
-uv pip install -e .
-```
-
+**Current Learning Phase**: Refactoring to proper OpenAI SDK patterns
+**Reference**: See `OPENAI_AGENT_SDK_REFACTOR_PLAN.md` for implementation roadmap
 
 ## Comprehensive Developer Testing Guide
 
@@ -475,133 +402,54 @@ python --version                # Should show Python 3.11+
 
 ### 2. Run Complete Test Suite
 ```bash
-# Run all tests (includes linting and syntax checks - now optimized!)
+# Run all tests (includes linting and syntax checks)
 ./scripts/test
 
-# Expected result: 26 tests passing + clean linting
-# - 8 tests: Mock data functionality
-# - 2 tests: CLI structure and imports
-# - 16 tests: Agent validation and multi-agent system components
-# - Fast syntax check (only on main source files)
-# - Complete in ~30 seconds (previously took much longer)
+# Expected result: All tests passing + clean linting
 ```
 
-### 3. Test Single Agent Functionality
+### 3. Test CLI Functionality
 ```bash
 # Test single-query mode
-uv run payment-ops -q "analyze"
+uv run payment-ops -q "analyze pending payments"
 
-# Expected: Should process 5 payments with summary:
-# - 1 retry, 2 escalations, 2 no actions
-# - Clean output with payment details
+# Expected: Should process 5 payments with summary
 ```
 
-### 4. Test Multi-Agent Interactive Mode
+### 4. Test Interactive Mode
 ```bash
 # Start interactive CLI
 uv run payment-ops
 
-# Test each command:
-> help                    # Should show all commands including multi-agent
-> analyze                 # Single agent mode
-> multi-agent            # Full 3-phase workflow
-> compliance PAY-12345   # Compliance assessment for specific payment
-> customer-service notify PAY-12345  # Customer service action
-> history                # Should show all previous analyses
+# Test commands:
+> help                    # Show available commands
+> analyze                 # Payment analysis
+> history                 # Previous analyses
 > exit
 ```
 
-### 5. Verify Multi-Agent Workflow
-```bash
-uv run payment-ops
-> multi-agent
-
-# Expected output phases:
-# Phase 1: Payment Operations (5 payments processed)
-# Phase 2: Compliance Assessment (reviews for escalated payments)
-# Phase 3: Customer Service (notifications sent)
-# Summary: Handoffs completed, agents involved
-```
-
-### 6. Test Development Scripts
+### 5. Test Development Scripts
 ```bash
 # Test development helper
 ./scripts/dev help       # Show available commands
 ./scripts/dev run        # Start CLI via dev script
 ./scripts/dev lint       # Quick lint check
 ./scripts/dev format     # Format code
-./scripts/dev server     # Start MCP server directly
-
-# Note: ./scripts/dev no longer has a 'test' command
-# Use ./scripts/test directly for comprehensive validation
-```
-
-### 7. Verify Project Structure
-```bash
-# Check all agent files exist
-ls src/payment_ops/agent/
-# Should show: __init__.py, payment_ops.py, customer_service.py, compliance.py, multi_agent_coordinator.py
-
-# Check all MCP servers exist
-ls src/payment_ops/*/server.py
-# Should show: payment_mcp/server.py, customer_mcp/server.py, compliance_mcp/server.py
-
-# Check tests cover everything
-ls tests/
-# Should show: test_cli.py, test_mock_data.py, test_multi_agent.py
-```
-
-### 8. Test Error Handling
-```bash
-# Test with invalid API key (temporarily)
-mv .env .env.backup
-uv run payment-ops -q "analyze"
-# Should show graceful error handling
-mv .env.backup .env
-```
-
-### 9. Performance Testing
-```bash
-# Test startup time
-time uv run payment-ops -q "analyze"
-# Should complete in under 30 seconds
-
-# Test multi-agent performance
-time (uv run payment-ops <<< "multi-agent
-exit")
-# Should complete multi-agent workflow
-```
-
-### 10. Integration Testing
-```bash
-# Test that all agents can be imported
-python -c "from src.payment_ops.agent.multi_agent_coordinator import MultiAgentCoordinator; print('✅ All imports work')"
-
-# Test CLI entry point
-uv run payment-ops --help
-# Should show help without errors
 ```
 
 **Success Criteria:**
-- ✅ All 26 tests pass with clean linting
-- ✅ Single agent processes 5 payments correctly
-- ✅ Multi-agent workflow completes all 3 phases
-- ✅ All CLI commands work without errors
+- ✅ All tests pass with clean linting
+- ✅ CLI processes 5 payments correctly
+- ✅ Interactive mode works without errors
 - ✅ No import or path errors
 - ✅ Fast performance (< 30 seconds for full test suite)
 - ✅ Development scripts work for individual tasks
 
 ## Learning Resources
 
-This codebase serves as a practical example of:
-- **OpenAI Agents SDK**: Modern multi-agent development patterns
-- **Model Context Protocol**: Standardized tool integration across multiple agents
-- **Payment Operations**: Real-world business logic implementation with specialist agents
-- **CLI Design**: Professional terminal application with multi-agent support
-- **Agent Coordination**: Handoff patterns and workflow orchestration
-
 **Educational Files**:
-- `payments_ops_prd.md` - Complete project requirements and Phase 2 completion status
-- `CONTINUATION_PROMPT.md` - Project continuation guide with Phase 3 options
+- `OPENAI_AGENT_SDK_REFACTOR_PLAN.md` - Complete implementation roadmap
+- `CLAUDE.md` - Project context and development workflow
 - Agent code includes extensive comments explaining multi-agent design decisions
 
+This project provides practical experience with modern AI agent development patterns while implementing realistic business workflows.
