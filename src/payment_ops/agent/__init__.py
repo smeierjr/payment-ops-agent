@@ -1,0 +1,1 @@
+"""Payment operations agent implementation"""

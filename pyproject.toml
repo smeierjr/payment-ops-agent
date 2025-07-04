@@ -1,0 +1,41 @@
+[project]
+name = "payment-ops-agent"
+version = "0.1.0"
+description = "Production-ready CLI for automated payment operations using OpenAI's Agent SDK and Model Context Protocol (MCP)"
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = ["openai", "agents", "mcp", "payments", "cli", "automation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "openai>=1.93.0",
+    "openai-agents>=0.1.0",
+    "python-dotenv>=1.1.1",
+    "fastmcp>=2.0.0",
+]
+
+[project.scripts]
+payment-ops = "payment_ops.cli:cli_main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.uv]
+package = true
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "flake8>=7.3.0",
+    "pytest>=8.4.1",
+]
