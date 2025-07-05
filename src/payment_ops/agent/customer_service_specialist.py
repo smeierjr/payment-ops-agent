@@ -4,7 +4,7 @@ Customer Service Specialist Agent - Focused on payment-related customer communic
 
 import os
 from typing import Dict, Any, Optional
-from agents.mcp.server import MCPServerStdio, MCPServerStdioParams
+from agents.mcp.server import MCPServerStdio
 from agents.agent import Agent
 from agents import Runner
 from datetime import datetime, timezone
@@ -54,51 +54,45 @@ class CustomerServiceSpecialist:
     This agent is responsible for all customer outreach, notifications, and service recovery.
     """
 
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: Optional[str] = None, mcp_server: Optional[MCPServerStdio] = None):
         """
         Initialize the Customer Service Specialist Agent
 
         Args:
             api_key: OpenAI API key (defaults to OPENAI_API_KEY env var)
+            mcp_server: Shared MCP server instance (avoids duplication)
         """
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         self.model = "gpt-4o-mini"  # Cost-optimized model
         self.instructions = CUSTOMER_SERVICE_INSTRUCTIONS
 
+        # Use shared MCP server if provided, otherwise initialize own
+        self.mcp_server = mcp_server
         self.agent: Optional[Agent] = None
-        self.mcp_server: Optional[MCPServerStdio] = None
 
     async def initialize(self) -> None:
         """Initialize the customer service specialist agent"""
-        await self.setup_mcp_server()
+        if not self.mcp_server:
+            print("⚠️  [CustomerServiceSpecialist] Warning: No MCP server provided")
+            return
 
-    async def setup_mcp_server(self):
-        """Setup unified MCP server connection"""
-        try:
-            # Get the path to the unified MCP server script
-            project_root = os.path.dirname(
-                os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-            )
-            mcp_server_path = os.path.join(
-                project_root, "src", "payment_ops", "unified_mcp", "server.py"
-            )
+        # Import output guardrails
+        from ..guardrails.output_validators import (
+            validate_customer_service_response,
+            validate_sensitive_data_screening,
+        )
 
-            # Create MCP server with stdio transport
-            params = MCPServerStdioParams(command="uv", args=["run", "python", mcp_server_path])
-            self.mcp_server = MCPServerStdio(params=params)
-
-            # Initialize agent with MCP server
-            self.agent = Agent(
-                name="CustomerServiceSpecialist",
-                instructions=self.instructions,
-                model=self.model,  # Cost-optimized model
-                mcp_servers=[self.mcp_server],
-            )
-
-        except Exception as e:
-            print(f"Warning: Failed to setup MCP server for CustomerServiceSpecialist: {e}")
-            self.mcp_server = None
-            self.agent = None
+        # Initialize agent with shared MCP server and output guardrails
+        self.agent = Agent(
+            name="CustomerServiceSpecialist",
+            instructions=self.instructions,
+            model=self.model,
+            mcp_servers=[self.mcp_server],
+            output_guardrails=[
+                validate_customer_service_response,
+                validate_sensitive_data_screening,
+            ],
+        )
 
     async def run(self, message: str) -> Dict[str, Any]:
         """
@@ -122,16 +116,9 @@ class CustomerServiceSpecialist:
             }
 
         try:
-            # Connect to the MCP server
-            if self.mcp_server is not None:
-                await self.mcp_server.connect()
-
             # Use the Runner to execute the agent
-            if self.agent is not None:
-                runner = Runner()
-                response = await runner.run(starting_agent=self.agent, input=message)
-            else:
-                raise RuntimeError("CustomerServiceSpecialist agent not initialized")
+            runner = Runner()
+            response = await runner.run(starting_agent=self.agent, input=message)
 
             # Extract customer service analysis from response
             service_analysis = self._extract_service_analysis(response)
@@ -207,7 +194,6 @@ class CustomerServiceSpecialist:
 
         # Extract customer IDs if mentioned
         import re
-
         customer_ids = re.findall(r"CUST-\d+", str(response))
         analysis["customers_contacted"] = list(set(customer_ids))
 
@@ -285,19 +271,8 @@ class CustomerServiceSpecialist:
         return await self.run(message)
 
     async def cleanup(self):
-        """Clean up MCP server connection"""
-        try:
-            if self.mcp_server:
-                print("CustomerServiceSpecialist cleanup initiated")
-                # Give a moment for natural cleanup
-                import asyncio
-
-                await asyncio.sleep(0.1)
-                self.mcp_server = None
-            self.agent = None
-        except Exception:
-            # Suppress cleanup errors to avoid noise
-            pass
+        """Clean up agent (MCP server cleanup handled by orchestrator)"""
+        self.agent = None
 
     async def __aenter__(self):
         """Async context manager entry"""
