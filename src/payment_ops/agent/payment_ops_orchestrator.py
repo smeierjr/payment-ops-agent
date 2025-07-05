@@ -137,25 +137,19 @@ class PaymentOpsOrchestrator:
 
         print("🔨 [ORCHESTRATOR] Creating specialist agents...")
 
-        # Create compliance specialist agent
+        # Create compliance specialist agent with shared MCP server
         print("🔨 [ORCHESTRATOR] Creating ComplianceSpecialist...")
-        from ..agent.compliance_specialist import COMPLIANCE_INSTRUCTIONS
-        self.compliance_agent = Agent(
-            name="ComplianceSpecialist",
-            instructions=COMPLIANCE_INSTRUCTIONS,
-            model=self.model,
-            mcp_servers=[self.mcp_server],
-        )
+        from ..agent.compliance_specialist import ComplianceSpecialist
+        compliance_specialist = ComplianceSpecialist(mcp_server=self.mcp_server)
+        await compliance_specialist.initialize()
+        self.compliance_agent = compliance_specialist.agent
 
-        # Create customer service specialist agent
+        # Create customer service specialist agent with shared MCP server
         print("🔨 [ORCHESTRATOR] Creating CustomerServiceSpecialist...")
-        from ..agent.customer_service_specialist import CUSTOMER_SERVICE_INSTRUCTIONS
-        self.customer_service_agent = Agent(
-            name="CustomerServiceSpecialist",
-            instructions=CUSTOMER_SERVICE_INSTRUCTIONS,
-            model=self.model,
-            mcp_servers=[self.mcp_server],
-        )
+        from ..agent.customer_service_specialist import CustomerServiceSpecialist
+        customer_service_specialist = CustomerServiceSpecialist(mcp_server=self.mcp_server)
+        await customer_service_specialist.initialize()
+        self.customer_service_agent = customer_service_specialist.agent
 
     async def create_primary_agent(self):
         """Create primary orchestrator agent with handoffs"""
@@ -183,7 +177,14 @@ class PaymentOpsOrchestrator:
         handoff_count = 2 if handoffs_enabled else 0
         print(f"🔗 [ORCHESTRATOR] Will register {handoff_count} handoff tools")
 
-        # Primary orchestrator agent for individual payment processing
+        # Import input guardrails
+        from ..guardrails.input_validators import (
+            validate_payment_request,
+            validate_query_safety,
+            validate_business_rules,
+        )
+
+        # Primary orchestrator agent for individual payment processing with input guardrails
         self.primary_agent = Agent(
             name="PaymentOpsOrchestrator",
             instructions=INDIVIDUAL_PAYMENT_INSTRUCTIONS,
@@ -203,6 +204,11 @@ class PaymentOpsOrchestrator:
                 if self.compliance_agent and self.customer_service_agent
                 else []
             ),
+            input_guardrails=[
+                validate_payment_request,
+                validate_query_safety,
+                validate_business_rules,
+            ],
         )
 
         # Debug: Check if handoff tools were registered
